@@ -2,6 +2,7 @@
 import numpy as np
 import matplotlib.image as mpimg
 import matplotlib.pyplot as plt
+from random import randint
 
 from PIL import Image
 from os import listdir, path
@@ -36,7 +37,7 @@ def reads(path, extens, w, h):
     return datas
 
 def randArray(a, b, *args):
-    np.random.seed(0)
+    np.random.seed(42*randint(0, 100))
     return np.random.rand(*args) * (b-a) + a
 
 
@@ -49,7 +50,8 @@ def im2col(inputData, filterH, filterW, stride=1, pad=0):
     # À©Õ¹
     img = np.pad(inputData, [(0,0), (0,0), (pad, pad), (pad, pad)], 'constant')
 
-    col = np.zeros((N, C, filterH, filterW, outH, outW), dtype=int) # <= add dtype=int
+    #col = np.zeros((N, C, filterH, filterW, outH, outW), dtype=int) # <= add dtype=int
+    col = np.zeros((N, C, filterH, filterW, outH, outW))
     for y in range(filterH):
         yMax = y + stride*outH
         for x in range(filterW):
@@ -65,7 +67,8 @@ def col2im(col, inputShape, filterH, filterW, stride=1, pad=0):
     outW = (W + 2*pad - filterH)//stride + 1
     col = col.reshape(N, outH, outW, C, filterH, filterW).transpose(0, 3, 4, 5, 1, 2)
 
-    img = np.zeros((N, C, H + 2*pad + stride - 1, W + 2*pad + stride - 1), dtype=int) # <= add dtype=int
+    #img = np.zeros((N, C, H + 2*pad + stride - 1, W + 2*pad + stride - 1), dtype=int) # <= add dtype=int
+    img = np.zeros((N, C, H + 2*pad + stride - 1, W + 2*pad + stride - 1))
     for y in range(filterH):
         yMax = y + stride*outH
         for x in range(filterW):
@@ -74,3 +77,4 @@ def col2im(col, inputShape, filterH, filterW, stride=1, pad=0):
             img[:, :, y:yMax:stride, x:xMax:stride] = col[:, :, y, x, :, :]
             
     return img[:, :, pad:H + pad, pad:W + pad]
+
